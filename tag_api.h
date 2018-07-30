@@ -57,7 +57,7 @@ public:
 
     /// @brief request()<vector> : execute API requests derived from vectored input
     /// @details accepts already parsed and split string
-    const std::string request(const std::vector<std::string>& in) const {
+    const std::string Request(const std::vector<std::string>& in) const {
         // pre-parsed vector MUST be multiples of 2 + 3 init
         assert((in.size() == 3) || (((in.size() - 3) % 2) == 0));
 
@@ -67,47 +67,47 @@ public:
             idx += 2; // move to next request
         }
 
-        return (this->m_callInit(reqs));
+        return (this->callInit(reqs));
     }
 
     ~TagAPI() = default;
 private:
-    /// @brief m_callInit() : returns result for given API request queue
+    /// @brief callInit() : returns result for given API request queue
     /// @details initial call() method searchs heads (i.e. multiple
     /// graph objects that MAY or may not be interlinked) for the
     /// initial subject. Sets initial base pointer and subsequently
     /// calls recursive method
     /// @return std::string : value
-    const std::string m_callInit(std::vector<TagAPIRequest>& queue) const {
+    const std::string callInit(std::vector<TagAPIRequest>& queue) const {
         assert(queue.size() != 0);
         Tag* base = nullptr; // set to default
 
         for (auto& a : m_head) { // for each individual graph node in HRML content
-            if (a->Tag::get().compare(queue[0].subject()) == 0) {
+            if (a->Tag::Get().compare(queue[0].subject()) == 0) {
                 base = a.get(); // update
                 break;
             }
         }
 
-        return (this->m_callRecursive(base, queue));
+        return (this->callRescursive(base, queue));
     }
 
-    /// @brief m_callRecursive() : member method for recursive API iteration
+    /// @brief callRescursive() : member method for recursive API iteration
     /// @details deletes queue object, base pointer is not modified
     /// @return std::string : value
-    const std::string m_callRecursive(Tag* base, std::vector<TagAPIRequest>& queue) const {
+    const std::string callRescursive(Tag* base, std::vector<TagAPIRequest>& queue) const {
 
         if (queue.empty() == false) {
             auto temp = *(queue.begin()); // temp storage for processing
             queue.erase(queue.begin()); // pop
 
-            if ((base != nullptr) && (base->Tag::get().compare(temp.subject()) == 0)) {
-                return (temp.memberOpr() ? this->m_callRecursive(base->getSubDiv(temp.value()), queue) :
-                                          base->Tag::search(temp.value()));
+            if ((base != nullptr) && (base->Tag::Get().compare(temp.subject()) == 0)) {
+                return (temp.memberOpr() ? this->callRescursive(base->GetSubDiv(temp.value()), queue) :
+                                          base->Tag::Search(temp.value()));
             }
         }
 
-        return Tag::defaultString();
+        return Tag::DefaultString();
     }
 
 private:

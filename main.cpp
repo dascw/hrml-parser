@@ -97,8 +97,8 @@ int main() {
     for (auto& a : request) {
         // Print result of API request - "Not Found!" returned if invalid request
         std::size_t temp_size = 0; // required due to modified split function
-        auto req_split = HRMLParser::GetInstance()->TagParser::split(a + ".", temp_size, std::pair<std::string, std::string>(".", "~"), true);
-        std::cout << HRMLParser::GetInstance()->TagAPI::request(req_split) << std::endl;
+        auto req_split = HRMLParser::GetInstance()->TagParser::Split(a + ".", temp_size, std::pair<std::string, std::string>(".", "~"), true);
+        std::cout << HRMLParser::GetInstance()->TagAPI::Request(req_split) << std::endl;
     }
 
     return 0;

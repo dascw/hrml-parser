@@ -25,21 +25,21 @@ public:
 
     /// @brief get() : returns tag string
     /// @return std::string&
-    const std::string& get() const { return this->m_tag; }
+    const std::string& Get() const { return this->m_tag; }
 
-    /// @brief search() : returns value for given id
+    /// @brief Search() : returns value for given id
     /// @details returns "Not Found!" if id does not exist
     /// @param std::string id
     /// @return std::string value | default string;
-    const std::string& search(const std::string& id) {
+    const std::string& Search(const std::string& id) {
         assert(id.size() != 0);
         return (m_value.find(id) != m_value.end()) ?
-                    m_value[id] : defaultString();
+                    m_value[id] : Tag::DefaultString();
     }
 
-    /// @brief addValues() : set values in hash map
+    /// @brief AddValues() : set values in hash map
     /// @param std::vector& vals
-    void addValues(const std::vector<std::string>& vals) {
+    void AddValues(const std::vector<std::string>& vals) {
         // add all of tag's values
         for (auto idx = vals.begin(); idx != vals.end(); ++idx) {
             // iterate.
@@ -48,16 +48,16 @@ public:
         }
     }
 
-    /// @brief getSelf() : returns self ptr for tree traversing
+    /// @brief GetSelf() : returns self ptr for tree traversing
     /// @return Tag* ptr
-    Tag * getSelf() {
+    Tag * GetSelf() {
         return (this);
     }
 
-    /// @brief getSubDiv() : pure virtual
-    virtual Tag * getSubDiv(const std::string& tag) const = 0;
+    /// @brief GetSubDiv() : pure virtual
+    virtual Tag * GetSubDiv(const std::string& tag) const = 0;
 
-    static const std::string& defaultString() {
+    static const std::string& DefaultString() {
         static const std::string default_string("Not Found!");
         return default_string;
     }
@@ -76,11 +76,11 @@ private:
 
 class TagParser {
 public:
-    /// @brief split() : splits input string on delimiter
-    /// @details provides malleable interface for splitting strings on
+    /// @brief Split() : Splits input string on delimiter
+    /// @details provides malleable interface for Splitting strings on
     /// input delimiter (as well as storing delimiter found).
     /// @param @todo
-    std::vector<std::string> split(const std::string& in,
+    std::vector<std::string> Split(const std::string& in,
                                     std::size_t& last,
                                     std::pair<std::string, std::string> delim
                                                 = std::pair<std::string, std::string>(" ", ">"),
@@ -121,14 +121,14 @@ public:
     }
 
 protected:
-    /// @brief extractDiv() : returns sub string from input string that
+    /// @brief ExtractDiv() : returns sub string from input string that
     /// contains div body of first tag found in input.
     /// @param std::string : in
     /// @return std::string : out
-    std::string extractDiv(const std::string& in) const {
+    std::string ExtractDiv(const std::string& in) const {
         assert(in.size() != 0);
 
-        const TagLocation tag_loc = findTag(in);
+        const TagLocation tag_loc = this->findTag(in);
 
         std::string term = "</" + std::string(in.begin() + (tag_loc.first), in.begin() + tag_loc.second) + ">";
         TagLocation term_loc = TagLocation(in.find(term), 0);
@@ -166,22 +166,22 @@ public:
         // will be parsed a string which will contain the body of a div
         // the body of the div may contain another TagDiv (i.e. subdiv).
 
-        // split string into substrings through terminator location
+        // Split string into substrings through terminator location
         std::vector<std::string> temp;
         std::size_t last = 1;
-        temp = this->split(in, last); // sets last = closure of current tag's attributes
+        temp = this->Split(in, last); // sets last = closure of current tag's attributes
 
         try {
 
             this->m_tag = temp[0]; // first vector member = tag
             temp.erase(temp.begin());
-            this->addValues(temp); // process/update tag values of self
+            this->AddValues(temp); // process/update tag values of self
             // if there is still content left in input, we know we have another TagDiv
             // inside this div.
             while (last < in.size()) {
                 // Extrapolate div - returns SIZE parsed and result
                 std::string div_result =
-                        this->extractDiv(std::string(in.begin() + last, in.end() ) );
+                        this->ExtractDiv(std::string(in.begin() + last, in.end() ) );
 
                 if ((div_result.size() > 2) && (div_result[1] != '/')) {
                     // check for empty div and div is not only terminator
@@ -197,18 +197,18 @@ public:
         }
     }
 
-    /// @brief getSubDiv() : returns pointer to Tag object if
+    /// @brief GetSubDiv() : returns pointer to Tag object if
     /// found in self tree
     /// @param tag ID
     /// @return Tag *
-    Tag * getSubDiv(const std::string& tag) const {
+    Tag * GetSubDiv(const std::string& tag) const {
         Tag * ret_val = nullptr;
 
         for (auto& a : m_tree) {
 
-            if (a->Tag::get().compare(tag) == 0) {
+            if (a->Tag::Get().compare(tag) == 0) {
 
-                ret_val = a->getSelf();
+                ret_val = a->GetSelf();
                 break;
             }
         }

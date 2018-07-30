@@ -13,8 +13,8 @@ class HRMLParser final : public TagParser, public TagAPI {
 public:
     /// @brief action() : access method for acting on singleton object
     static HRMLParser * GetInstance() {
-        static HRMLParser * m_instance = nullptr; // singleton instance of HRMLParser
-
+        static HRMLParser * m_instance = nullptr;
+        
         if (m_instance == nullptr) 
             m_instance = new HRMLParser();
             
@@ -24,10 +24,10 @@ public:
     /// @brief init() : method to initialise parser
     /// @param std::string& : concatenation of user input
     void Init(const std::string& full) {
-        std::string sub = full; // copy string for sub processing
+        std::string sub = full;
         do {
             // Create div up to end of div object (e.g. <tag>...</tag>).
-            std::string div = TagParser::extractDiv(sub);
+            std::string div = TagParser::ExtractDiv(sub);
 
             // Parse the current div object.
             m_head.push_back(std::make_unique<TagDiv>(div));
@@ -41,7 +41,6 @@ public:
                                            // if not, div object still likely remains.
     }
 
-    // force remove constructors (c++11 required)
     HRMLParser(HRMLParser const&)       = delete;
     void operator=(HRMLParser const&)   = delete;
 private:
