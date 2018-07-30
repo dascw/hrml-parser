@@ -17,40 +17,55 @@
 // @note Set macro to 0 to enable user input (hackerrank parse).
 #define TESTING 1
 
-/// @details testing function for parsing input stream / file stream
+/// @brief class for parsing input stream / file stream
+/// @details singleton class.
+class InputParse {
+public:
+    static InputParse * GetInstance() {
+        if (m_instance == nullptr)
+            m_instance = new InputParse();
+        return m_instance;
+    }
 #if TESTING == 1
-
-    static std::stringstream & getInput() {
-        static const std::string cn_TEST_FILE_NAME = "test/test_4.txt";
-
-        static bool init = false;
-        static std::stringstream buf;
-        if (init == false) {
-            std::ifstream file(cn_TEST_FILE_NAME);
-            if (file) { // opened
-                buf << file.rdbuf();
-                file.close();
-            } else {
-                throw "File read failed!"; // except on char* throw
-            }
-        }
-
-        return buf;
+    static std::stringstream& GetInput() {
+        return m_buf;
     }
 #else
-    stataic std::istream& getInput() {
+    stataic std::istream& GetInput() {
         return std::cin;
     }
+#endif // TESTING
+private:
+    InputParse()  { 
+    #if TESTING == 1
+        static const std::string cn_TEST_FILE_NAME("test/test_4.txt");
+        std::ifstream file(cn_TEST_FILE_NAME);
+        if (file) {
+            m_buf << file.rdbuf();
+            file.close();
+        } else {
+            throw "file read failed!"; // exception
+        }
+    #endif // TESTING
+    }
 
-#endif // TESTTING
+    ~InputParse() = default;
+
+    static InputParse * m_instance;
+    static std::stringstream m_buf;
+};
+InputParse * InputParse::m_instance = nullptr;
+std::stringstream InputParse::m_buf;
+
+
 
 int main() {
     // required for vector size generation
     int line_num;
     int req_num;
 
-    // Retrieve line numbers
-    getInput() >> line_num >> req_num;
+    InputParse::GetInstance()->GetInput() >> line_num >> req_num;
+
     // Build vectors for lines/API requests
     std::vector<std::string> lines(line_num);
     std::vector<std::string> request(req_num);
@@ -58,9 +73,9 @@ int main() {
     /// @brief lambda for parsing user/file input
     auto retrieve = [&](std::vector<std::string>& store)->void {
         for (std::size_t idx = 0; idx < store.size(); ) {
-            std::getline(getInput(), store[idx]);
+            std::getline(InputParse::GetInstance()->GetInput(), store[idx]);
             // When parsing test data, line terminator can spuriously push vector
-            // along : check contents is not empty blocks this.
+            // along; checking contents is not empty blocks this.
             if (store[idx].compare("") != 0)
                 idx++;
         }
