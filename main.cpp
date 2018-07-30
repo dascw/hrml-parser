@@ -26,6 +26,18 @@ public:
             m_instance = new InputParse();
         return m_instance;
     }
+
+    /// @brief retrieve : parsing user/file input
+    static void Retrieve(std::vector<std::string>& store) {
+        for (std::size_t idx = 0; idx < store.size(); ) {
+            std::getline(GetInstance()->GetInput(), store[idx]);
+            // When parsing test data, line terminator can spuriously push vector
+            // along; checking contents is not empty blocks this.
+            if (store[idx].compare("") != 0)
+                idx++;
+        }
+    }
+
 #if TESTING == 1
     static std::stringstream& GetInput() {
         return m_buf;
@@ -58,7 +70,6 @@ InputParse * InputParse::m_instance = nullptr;
 std::stringstream InputParse::m_buf;
 
 
-
 int main() {
     // required for vector size generation
     int line_num;
@@ -70,38 +81,25 @@ int main() {
     std::vector<std::string> lines(line_num);
     std::vector<std::string> request(req_num);
 
-    /// @brief lambda for parsing user/file input
-    auto retrieve = [&](std::vector<std::string>& store)->void {
-        for (std::size_t idx = 0; idx < store.size(); ) {
-            std::getline(InputParse::GetInstance()->GetInput(), store[idx]);
-            // When parsing test data, line terminator can spuriously push vector
-            // along; checking contents is not empty blocks this.
-            if (store[idx].compare("") != 0)
-                idx++;
-        }
-    };
-
     // Retrieve contents from user-input/file
-    retrieve(lines);
-    retrieve(request);
+    InputParse::GetInstance()->Retrieve(lines);
+    InputParse::GetInstance()->Retrieve(request);
 
     // build full string for processing (whole stream required to generate tree recurisvely)
     std::string full = std::accumulate(lines.begin(), 
                                         lines.end(), 
                                         std::string(""));
 
-    do {
-        // parse constructed content
-        HRMLParser::action().HRMLParser::init(full);
+    // parse constructed content
+    HRMLParser::GetInstance()->HRMLParser::Init(full);
 
-        // Process all requests to div content.
-        for (auto& a : request) {
-            // Print result of API request - "Not Found!" returned if invalid request
-            std::size_t temp_size = 0; // required due to modified split function
-            auto req_split = HRMLParser::action().TagParser::split(a + ".", temp_size, std::pair<std::string, std::string>(".", "~"), true);
-            std::cout << HRMLParser::action().TagAPI::request(req_split) << std::endl;
-        }
-    } while (0); // scope reduction
+    // Process all requests to div content.
+    for (auto& a : request) {
+        // Print result of API request - "Not Found!" returned if invalid request
+        std::size_t temp_size = 0; // required due to modified split function
+        auto req_split = HRMLParser::GetInstance()->TagParser::split(a + ".", temp_size, std::pair<std::string, std::string>(".", "~"), true);
+        std::cout << HRMLParser::GetInstance()->TagAPI::request(req_split) << std::endl;
+    }
 
     return 0;
 }

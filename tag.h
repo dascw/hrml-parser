@@ -1,8 +1,11 @@
 // tag.h
+#include <iostream>
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <memory>
+#include <assert.h>
+
 // Aliases
 ///@brief TagLocators : extension of pair for simplistic return
 using TagLocation = std::pair<std::size_t, std::size_t>;
@@ -12,7 +15,7 @@ using TagPtr = std::unique_ptr<Tag>;
 
 class Tag {
 public:
-    Tag() {} // default constructor
+    Tag() = default;
 
     /// @brief Tag() : represents an individual tag object
     Tag(const std::string& tag, const std::string& id, const std::string& val) :
@@ -31,7 +34,7 @@ public:
     const std::string& search(const std::string& id) {
         assert(id.size() != 0);
         return (m_value.find(id) != m_value.end()) ?
-                    m_value[id] : sm_default;
+                    m_value[id] : defaultString();
     }
 
     /// @brief addValues() : set values in hash map
@@ -54,13 +57,15 @@ public:
     /// @brief getSubDiv() : pure virtual
     virtual Tag * getSubDiv(const std::string& tag) const = 0;
 
-    virtual ~Tag () { /*destructor*/ }
-    static const std::string sm_default; // allows referenced return from search() method
+    static const std::string& defaultString() {
+        static const std::string default_string("Not Found!");
+        return default_string;
+    }
 
+    virtual ~Tag () = default;
 protected:
     std::string m_tag; // self tag
     std::unordered_map<std::string, std::string> m_value; // allows simplistic look up for any id.
-
 private:
     /// @brief setValue : private method for inserting value into tree
     void setValue(const std::string& id, const std::string& value) {
@@ -68,9 +73,6 @@ private:
         m_value[id] = value; // allows inserting of values into tree
     }
 };
-
-// Init default string
-const std::string Tag::sm_default = "Not Found!";
 
 class TagParser {
 public:
@@ -135,9 +137,8 @@ protected:
         return std::string(in.begin(), in.begin() + term_loc.second);
     }
 
-    explicit TagParser()  {} // default constructor
-    virtual ~TagParser()  {} // default destructor
-
+    explicit TagParser() = default;
+    virtual ~TagParser() = default;
 private:
     /// @brief findTag() : returns location of tag open terminator in string
     const TagLocation findTag(const std::string& in) const {
@@ -156,10 +157,9 @@ private:
     }
 };
 
-
 class TagDiv final : public Tag, public TagParser {
 public:
-    TagDiv() {} // default
+    TagDiv() = default;
 
     /// @brief TagDiv() : constuctor for TagDiv tag tree graph
     TagDiv(const std::string& in) {
@@ -215,7 +215,7 @@ public:
         return ret_val;
     }
 
-    ~TagDiv() { /*destructor */}
+    ~TagDiv() = default;
 private:
     std::vector<TagPtr> m_tree; // smart pointer tree graph
 };

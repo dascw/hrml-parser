@@ -12,15 +12,18 @@
 class HRMLParser final : public TagParser, public TagAPI {
 public:
     /// @brief action() : access method for acting on singleton object
-    static HRMLParser& action() {
-        static HRMLParser s_instance; // singleton instance of HRMLParser
+    static HRMLParser * GetInstance() {
+        static HRMLParser * m_instance = nullptr; // singleton instance of HRMLParser
 
-        return s_instance;
+        if (m_instance == nullptr) 
+            m_instance = new HRMLParser();
+            
+        return m_instance;
     }
 
     /// @brief init() : method to initialise parser
     /// @param std::string& : concatenation of user input
-    void init(const std::string& full) {
+    void Init(const std::string& full) {
         std::string sub = full; // copy string for sub processing
         do {
             // Create div up to end of div object (e.g. <tag>...</tag>).

@@ -13,10 +13,10 @@ public:
     /// @brief TagAPIRequest() : iterator constructor
     /// @details constructs separate string objects
     /// from iterators (all must be of same origin!)
-    template<typename T>
-    explicit TagAPIRequest(const T& subject,
-                            const T& op,
-                            const T& val) {
+    template <typename _Tp>
+    explicit TagAPIRequest(const _Tp& subject,
+                            const _Tp& op,
+                            const _Tp& val) {
         // construct string based on iterator locations
         this->m_subject  = std::string(subject, op);
         this->m_operator = std::string(op, op + 1); // +1 to step over operator symbol
@@ -43,6 +43,7 @@ public:
     const std::string& op()       const { return this->m_operator; }
     const std::string& value()    const { return this->m_value; }
 
+    ~TagAPIRequest() = default;
 private:
     // members
     std::string m_subject;
@@ -52,7 +53,7 @@ private:
 
 class TagAPI {
 public:
-    TagAPI(std::vector<TagPtr>& head) : m_head(head)  {}
+    TagAPI(std::vector<TagPtr>& head) : m_head(head) {}
 
     /// @brief request()<vector> : execute API requests derived from vectored input
     /// @details accepts already parsed and split string
@@ -69,7 +70,7 @@ public:
         return (this->m_callInit(reqs));
     }
 
-    ~TagAPI() {}
+    ~TagAPI() = default;
 private:
     /// @brief m_callInit() : returns result for given API request queue
     /// @details initial call() method searchs heads (i.e. multiple
@@ -106,12 +107,11 @@ private:
             }
         }
 
-        return Tag::sm_default;
+        return Tag::defaultString();
     }
 
 private:
-    const std::vector<TagPtr>& m_head;  // reference set in derived class on instantiation
-                                        // @note not modified through API
+    const std::vector<TagPtr>& m_head;  // @note not modified through API
 };
 
 #endif 
