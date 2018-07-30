@@ -1,4 +1,4 @@
-// hrml_parser.hrml_parser
+// hrml_parser.h
 #ifndef HRML_PARSE_H
 #define HRML_PARSE_H
 
@@ -37,8 +37,7 @@ public:
 
             m_div_end += div.size(); // update locator to track end of input
 
-        } while (m_div_end < full.size()); // Check if the entire input has been parsed,
-                                           // if not, div object still likely remains.
+        } while (m_div_end < full.size()); // Check if the entire input has been parsed, if not, div object still likely remains.
     }
 
     HRMLParser(HRMLParser const&)       = delete;
@@ -56,4 +55,4 @@ private:
 
 #endif 
     // HRML_PARSE_H
-    /******************************************end of file******************************************/
+/******************************************end of file******************************************/

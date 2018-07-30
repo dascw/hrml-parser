@@ -105,8 +105,7 @@ public:
 
                 last = idx + 1; // update index and step over space
 
-                if (in[idx] == '>') {
-                    // exit on div completion
+                if (in[idx] == '>') { // == div completion
                     break;
                 }
             }
@@ -162,17 +161,15 @@ public:
     TagDiv() = default;
 
     /// @brief TagDiv() : constuctor for TagDiv tag tree graph
+    /// @details will be parsed a string which will contain the body of a div
+    ///          the body of the div may contain another TagDiv (i.e. subdiv).
     TagDiv(const std::string& in) {
-        // will be parsed a string which will contain the body of a div
-        // the body of the div may contain another TagDiv (i.e. subdiv).
-
         // Split string into substrings through terminator location
         std::vector<std::string> temp;
-        std::size_t last = 1;
+        std::size_t last = 1; // @todo why 1? add comment
         temp = this->Split(in, last); // sets last = closure of current tag's attributes
 
         try {
-
             this->m_tag = temp[0]; // first vector member = tag
             temp.erase(temp.begin());
             this->AddValues(temp); // process/update tag values of self
@@ -183,7 +180,7 @@ public:
                 std::string div_result =
                         this->ExtractDiv(std::string(in.begin() + last, in.end() ) );
 
-                if ((div_result.size() > 2) && (div_result[1] != '/')) {
+                if ((div_result.size() > 2) && (div_result[1] != '/')) { // @todo remove magic numbers
                     // check for empty div and div is not only terminator
                     m_tree.push_back(std::move(std::make_unique<TagDiv>(div_result) ) );
                 }
