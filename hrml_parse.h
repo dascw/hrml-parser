@@ -1,4 +1,12 @@
-// hrml_parser.h
+/**
+ * @brief hyper-redundant-markup-language parser. 
+ * @details HRML is roughly equivalent to HTML, however it's redundant, and only
+ * beneficial for this excercise. HRML has a unique query method for getting values
+ * from built tree. 
+ * 
+ * @file hrml_parse.h
+ * @author SCW
+ */
 #ifndef HRML_PARSE_H
 #define HRML_PARSE_H
 
@@ -9,7 +17,7 @@
 
 /// @brief HRMLParser : front end for parsing / accessing HRML content
 /// @details inforced singleton object
-class HRMLParser final : public TagParser, public TagAPI {
+class HRMLParser final : public TagParser, public TagAPI::Interface {
 public:
     /// @brief action() : access method for acting on singleton object
     static HRMLParser * GetInstance() {
@@ -45,7 +53,7 @@ public:
 private:
     /// @brief constructor() : forced private to prevent multiple instances (singleton)
     HRMLParser()
-        : TagAPI(m_head), m_div_end(0) { }
+        : TagAPI::Interface(m_head), m_div_end(0) { }
 
     ~HRMLParser() {}
 

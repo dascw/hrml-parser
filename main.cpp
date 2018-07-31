@@ -38,6 +38,11 @@ public:
         }
     }
 
+    /**
+     * @brief allows parsing from user input or from file input;
+     * @details file input required for HankerRank test.
+     * 
+     */
 #if TESTING == 1
     static std::stringstream& GetInput() {
         return m_buf;
@@ -98,7 +103,7 @@ int main() {
         // Print result of API request - "Not Found!" returned if invalid request
         std::size_t temp_size = 0; // required due to modified split function
         auto req_split = HRMLParser::GetInstance()->TagParser::Split(a + ".", temp_size, std::pair<std::string, std::string>(".", "~"), true);
-        std::cout << HRMLParser::GetInstance()->TagAPI::Request(req_split) << std::endl;
+        std::cout << HRMLParser::GetInstance()->TagAPI::Interface::Request(req_split) << std::endl;
     }
 
     return 0;

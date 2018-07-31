@@ -1,4 +1,9 @@
-// tag.h
+/**
+ * @brief Tag, TagDiv and TagParser. 
+ * 
+ * @file tag.h
+ * @author SCW
+ */
 #include <iostream>
 #include <string>
 #include <vector>
@@ -13,6 +18,7 @@ class Tag;
 /// @brief TagPtr : smart pointer for tag object storage control
 using TagPtr = std::unique_ptr<Tag>;
 
+/// @brief Tag : contains indiviudal Tag data, as well as tree map to other tags.
 class Tag {
 public:
     Tag() = default;
@@ -74,6 +80,7 @@ private:
     }
 };
 
+/// @brief TagParser : contains API for splitting raw string content into tag divisions. 
 class TagParser {
 public:
     /// @brief Split() : Splits input string on delimiter
@@ -156,13 +163,13 @@ private:
     }
 };
 
+/// @brief TagDiv() : constuctor for TagDiv tag tree graph.
+/// @details will be parsed a string which will contain the body of a div
+///          the body of the div may contain another TagDiv (i.e. subdiv).
 class TagDiv final : public Tag, public TagParser {
 public:
     TagDiv() = default;
 
-    /// @brief TagDiv() : constuctor for TagDiv tag tree graph
-    /// @details will be parsed a string which will contain the body of a div
-    ///          the body of the div may contain another TagDiv (i.e. subdiv).
     TagDiv(const std::string& in) {
         // Split string into substrings through terminator location
         std::vector<std::string> temp;
