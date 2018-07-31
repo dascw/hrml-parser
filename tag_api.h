@@ -123,7 +123,6 @@ namespace TagAPI {
     };
 }
 
-
 #endif 
     // TAG_API_H
 

@@ -1,16 +1,16 @@
-#include <cmath>
-#include <cstdio>
-#include <vector>
+/**
+ * @brief main execution for HRML parser. 
+ * @details handles file/user input through InputParse singleton.
+ *
+ * @file main.cpp
+ * @author SCW
+ */
 #include <iostream>
 #include <streambuf>
 #include <fstream>
 #include <sstream>
-#include <memory>
-#include <functional>
-#include <unordered_map>
 #include <algorithm>
 #include <numeric>
-#include <assert.h>
 
 #include "hrml_parse.h"
 

@@ -4,6 +4,10 @@
  * @file tag.h
  * @author SCW
  */
+
+#ifndef TAG_H
+#define TAG_H
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -223,5 +227,8 @@ public:
 private:
     std::vector<TagPtr> m_tree; // smart pointer tree graph
 };
+
+#endif  
+    // TAG_H
 
 /**************************************end of file**************************************/
